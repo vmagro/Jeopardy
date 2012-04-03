@@ -19,7 +19,13 @@ public class XmlStorage implements DataStorage{
 	}
 
 	@Override
-	public void put(String question, String answer, int row, int col, int value) {
+	public void put(String question, String answer, int col, int row, int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void put(Question question) {
 		// TODO Auto-generated method stub
 		
 	}

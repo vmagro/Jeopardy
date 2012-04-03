@@ -97,13 +97,18 @@ public class SQLiteStorage implements DataStorage{
 	}
 
 	@Override
-	public void put(String question, String answer, int row, int col, int value) {
+	public void put(String question, String answer, int col, int row, int value) {
 		try {
 			Statement statement = conn.createStatement();
 			statement.execute(String.format(INSERT_QUESTION, question, answer, row, col, value));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void put(Question question) {
+		put(question.getQuestion(), question.getAnswer(), question.getCol(), question.getRow(), question.getValue());
 	}
 
 
