@@ -15,9 +15,10 @@ public class SQLiteStorage implements DataStorage{
 	private static final String ROW = "row";
 	private static final String COLUMN = "column";
 	private static final String VALUE = "value";
+	private static final String ID = "id";
 
 	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "+TABLE+" (" +
-			//"id INTEGER PRIMARY KEY," +
+			ID+" INTEGER PRIMARY KEY," +
 			QUESTION+" TEXT," +
 			ANSWER+" TEXT," +
 			COLUMN+" INTEGER," +
@@ -26,13 +27,29 @@ public class SQLiteStorage implements DataStorage{
 			");";
 
 	private static final String SELECT_BY_POS = "SELECT %s FROM "+TABLE+" WHERE "+COLUMN+"=%d AND "+ROW+"=%d";
+	private static final String SELECT_BY_ID = "SELECT * FROM "+TABLE+" WHERE "+ID+"=%d";
 
 	private static final String INSERT_QUESTION = "INSERT INTO "+TABLE+
-			" VALUES('%s','%s',%d,%d,%d);";
+			" VALUES(NULL, '%s','%s',%d,%d,%d);";
 	
 	private Connection conn = null;
 
-	public SQLiteStorage(File database){
+	
+	private static SQLiteStorage instance = null;
+	
+	public static SQLiteStorage getInstance(){
+		return instance;
+	}
+	
+	public static void init(File f){
+		instance = new SQLiteStorage(f);
+	}
+	
+	public static void init(String path){
+		init(new File(path));
+	}
+	
+	private SQLiteStorage(File database){
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
@@ -46,10 +63,8 @@ public class SQLiteStorage implements DataStorage{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public SQLiteStorage(String database){
-		this(new File(database));
+		
+		instance = this;
 	}
 	
 	@Override
@@ -60,6 +75,24 @@ public class SQLiteStorage implements DataStorage{
 		q.setAnswer(getAnswer(col, row));
 		q.setQuestion(getQuestionString(col, row));
 		q.setValue(getValue(col, row));
+		return q;
+	}
+	
+	@Override
+	public Question getQuestion(int id){
+		Question q = new Question();
+		try{
+			Statement query = conn.createStatement();
+			System.out.println(String.format(SELECT_BY_ID, id));
+			ResultSet result = query.executeQuery(String.format(SELECT_BY_ID, id));
+			q.setCol(result.getInt(COLUMN));
+			q.setRow(result.getInt(ROW));
+			q.setQuestion(result.getString(QUESTION));
+			q.setAnswer(result.getString(ANSWER));
+			q.setValue(result.getInt(VALUE));
+		}catch(SQLException ex){
+			ex.printStackTrace();
+		}
 		return q;
 	}
 

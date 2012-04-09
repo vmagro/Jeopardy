@@ -24,5 +24,11 @@ public class XmlStorage implements DataStorage{
 		
 	}
 
+	@Override
+	public Question getQuestion(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }
