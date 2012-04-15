@@ -105,7 +105,6 @@ public class SQLiteStorage extends DataStorage{
 			q.setQuestion(result.getString(QUESTION));
 			q.setAnswer(result.getString(ANSWER));
 			q.setValue(result.getInt(VALUE));
-			System.out.println(q);
 		}catch(SQLException ex){
 			ex.printStackTrace();
 		}

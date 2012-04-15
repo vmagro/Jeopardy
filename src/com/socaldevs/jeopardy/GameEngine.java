@@ -35,7 +35,6 @@ public class GameEngine {
 	
 	public void registerIncorrect(int value){
 		player.addScore(-value);
-		System.out.println("Subtracting $"+value);
 	}
 	
 	public void registerCorrect(int value){
