@@ -16,9 +16,10 @@ public class Button extends JButton implements ButtonInterface{
 	private int questionId = 0;
 	
 	public Button(int col, int row){
+		questionId = GameEngine.getInstance().getStorage().getId(col, row);
 		setText(String.valueOf(GameEngine.getInstance().getStorage().getQuestion(col, row).getValue()));
 		setBackground(Color.BLUE);
-		questionId = GameEngine.getInstance().getStorage().getId(col, row);
+		setForeground(Color.WHITE);
 	}
 	
 	public int getQuestionId(){
@@ -26,7 +27,7 @@ public class Button extends JButton implements ButtonInterface{
 	}
 	
 	public void deactivate(){
-		//setBackground(Color.GRAY);
+		setBackground(Color.GRAY);
 		setEnabled(false);
 	}
 

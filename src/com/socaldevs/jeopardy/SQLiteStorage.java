@@ -1,6 +1,7 @@
 package com.socaldevs.jeopardy;
 
 import java.io.File;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -48,18 +49,21 @@ public class SQLiteStorage extends DataStorage{
 	private static SQLiteStorage instance = null;
 	
 	public static SQLiteStorage getInstance(){
+		if(instance == null)
+			throw new StorageNotInitializedException();
 		return instance;
 	}
 	
-	public static void init(File f){
-		instance = new SQLiteStorage(f);
+	public static void init(String name){
+		String url = ClassLoader.getSystemResource(name).toExternalForm();
+		if(url.contains("file:"))
+			url = url.replace("file:", "");
+		else if(url.contains("jar:"))
+			url = url.replace("jar:", ":resource:");
+		instance = new SQLiteStorage(url);
 	}
 	
-	public static void init(String path){
-		init(new File(path));
-	}
-	
-	private SQLiteStorage(File database){
+	private SQLiteStorage(String database){
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
@@ -67,7 +71,7 @@ public class SQLiteStorage extends DataStorage{
 		}//load sqlite driver
 
 		try {
-			conn = DriverManager.getConnection("jdbc:sqlite:"+database.getAbsolutePath(),"","");
+			conn = DriverManager.getConnection("jdbc:sqlite:"+database,"","");
 			Statement createStatement = conn.createStatement();
 			createStatement.execute(CREATE_TABLE);
 			createStatement.execute(CREATE_CAT_TABLE);
@@ -101,6 +105,7 @@ public class SQLiteStorage extends DataStorage{
 			q.setQuestion(result.getString(QUESTION));
 			q.setAnswer(result.getString(ANSWER));
 			q.setValue(result.getInt(VALUE));
+			System.out.println(q);
 		}catch(SQLException ex){
 			ex.printStackTrace();
 		}
@@ -219,5 +224,18 @@ public class SQLiteStorage extends DataStorage{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static class StorageNotInitializedException extends RuntimeException{
+
+		public StorageNotInitializedException(){
+			super("Storage not initialized. Call init() first");
+		}
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
 	}
 }

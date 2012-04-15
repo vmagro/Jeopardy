@@ -70,11 +70,11 @@ public class QuestionFrame extends JFrame implements ActionListener{
 			JLabel label = new JLabel();
 			if(qid == this.questionId){
 				label.setText("Correct!");
-				GameEngine.getInstance().registerCorrect(GameEngine.getInstance().getStorage().getQuestion(qid).getValue());
+				GameEngine.getInstance().registerCorrect(GameEngine.getInstance().getStorage().getQuestion(questionId).getValue());
 			}
 			else{
 				label.setText("Sorry, but that is incorrect");
-				GameEngine.getInstance().registerIncorrect(GameEngine.getInstance().getStorage().getQuestion(qid).getValue());
+				GameEngine.getInstance().registerIncorrect(GameEngine.getInstance().getStorage().getQuestion(questionId).getValue());
 			}
 			dialog.setLocation(getX(), getY());
 			this.setVisible(false);

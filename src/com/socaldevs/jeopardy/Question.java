@@ -46,5 +46,9 @@ public class Question {
 		this.id = id;
 	}
 
+	@Override
+	public String toString(){
+		return question+","+answer+",$"+value;
+	}
 	
 }

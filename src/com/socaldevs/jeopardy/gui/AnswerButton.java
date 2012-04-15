@@ -19,6 +19,7 @@ public class AnswerButton extends JButton implements ButtonInterface{
 		this.questionId = id;
 		setText(GameEngine.getInstance().getStorage().getAnswer(id));
 		setBackground(Color.BLUE);
+		setForeground(Color.WHITE);
 	}
 	
 	public int getQuestionId(){
