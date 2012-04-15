@@ -1,7 +1,5 @@
 package com.socaldevs.jeopardy.gui;
 
-import java.awt.GridLayout;
-
 import javax.swing.JFrame;
 
 import com.socaldevs.jeopardy.GameEngine;

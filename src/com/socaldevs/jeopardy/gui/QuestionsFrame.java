@@ -11,6 +11,11 @@ import com.socaldevs.jeopardy.GameEngine;
 
 public class QuestionsFrame extends JFrame implements ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private static QuestionsFrame instance;
 	
 	public static QuestionsFrame getInstance(){

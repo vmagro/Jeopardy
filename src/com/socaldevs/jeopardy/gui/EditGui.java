@@ -12,6 +12,11 @@ import com.socaldevs.jeopardy.SQLiteStorage;
 
 public class EditGui extends JFrame implements ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static SQLiteStorage stor = null;
 	
 	private JTextField cat1, cat2, cat3, cat4, cat5;
@@ -35,7 +40,7 @@ public class EditGui extends JFrame implements ActionListener{
 	public static void main(String[] args) {
 		SQLiteStorage.init("test.db");
 		stor = SQLiteStorage.getInstance();
-		EditGui editGui = new EditGui();
+		new EditGui();
 	}
 	
 	public EditGui(){
