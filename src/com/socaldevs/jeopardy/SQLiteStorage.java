@@ -6,9 +6,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SQLiteStorage implements DataStorage{
 
+public class SQLiteStorage extends DataStorage{
+
+	private static final String CAT_TABLE = "categories";
+	private static final String CAT_NAME = "name";
+	private static final String CAT_INDEX = "num";
 	private static final String TABLE = "jeopardy";
 	private static final String QUESTION = "question";
 	private static final String ANSWER = "answer";
@@ -24,6 +30,10 @@ public class SQLiteStorage implements DataStorage{
 			COLUMN+" INTEGER," +
 			ROW+" INTEGER," +
 			VALUE+" INTEGER" +
+			");";
+	private static final String CREATE_CAT_TABLE = "CREATE TABLE IF NOT EXISTS "+CAT_TABLE+" (" +
+			CAT_NAME+" TEXT," +
+			CAT_INDEX+" INTEGER" +
 			");";
 
 	private static final String SELECT_BY_POS = "SELECT %s FROM "+TABLE+" WHERE "+COLUMN+"=%d AND "+ROW+"=%d";
@@ -60,6 +70,7 @@ public class SQLiteStorage implements DataStorage{
 			conn = DriverManager.getConnection("jdbc:sqlite:"+database.getAbsolutePath(),"","");
 			Statement createStatement = conn.createStatement();
 			createStatement.execute(CREATE_TABLE);
+			createStatement.execute(CREATE_CAT_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -75,6 +86,7 @@ public class SQLiteStorage implements DataStorage{
 		q.setAnswer(getAnswer(col, row));
 		q.setQuestion(getQuestionString(col, row));
 		q.setValue(getValue(col, row));
+		q.setId(getId(col, row));
 		return q;
 	}
 	
@@ -83,7 +95,6 @@ public class SQLiteStorage implements DataStorage{
 		Question q = new Question();
 		try{
 			Statement query = conn.createStatement();
-			System.out.println(String.format(SELECT_BY_ID, id));
 			ResultSet result = query.executeQuery(String.format(SELECT_BY_ID, id));
 			q.setCol(result.getInt(COLUMN));
 			q.setRow(result.getInt(ROW));
@@ -94,6 +105,10 @@ public class SQLiteStorage implements DataStorage{
 			ex.printStackTrace();
 		}
 		return q;
+	}
+	
+	public String getAnswer(int id){
+		return getQuestion(id).getAnswer();
 	}
 
 	public String getQuestionString(int col, int row) {
@@ -128,9 +143,22 @@ public class SQLiteStorage implements DataStorage{
 		}
 		return 0;
 	}
+	
+	public int getId(int col, int row){
+		try{
+			Statement query = conn.createStatement();
+			ResultSet result = query.executeQuery(String.format(SELECT_BY_POS, ID, col, row));
+			return result.getInt(ID);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
 	@Override
 	public void put(String question, String answer, int col, int row, int value) {
+		question = question.replace("'", "''");
+		answer = answer.replace("'", "''");
 		try {
 			Statement statement = conn.createStatement();
 			statement.execute(String.format(INSERT_QUESTION, question, answer, row, col, value));
@@ -143,6 +171,53 @@ public class SQLiteStorage implements DataStorage{
 	public void put(Question question) {
 		put(question.getQuestion(), question.getAnswer(), question.getCol(), question.getRow(), question.getValue());
 	}
+	
+	public int numQuestions(){
+		try{
+			Statement stmt = conn.createStatement();
+			ResultSet result = stmt.executeQuery("SELECT MAX("+ID+") FROM "+TABLE);
+			return result.getInt(1);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
+	@Override
+	public void addCategory(String cat, int num) {
+		cat = cat.replace("'", "''");
+		try{
+			Statement stmt = conn.createStatement();
+			stmt.execute("INSERT INTO "+CAT_TABLE+" VALUES('"+cat+"',"+num+");");
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 
+	@Override
+	public List<String> getCategories() {
+		ArrayList<String> cats = new ArrayList<String>();
+		try{
+			Statement stmt = conn.createStatement();
+			ResultSet result = stmt.executeQuery("SELECT * FROM "+CAT_TABLE);
+			while(result.next()){
+				cats.add(result.getString(CAT_NAME));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return cats;
+	}
+	
+	public void resetDb(){
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.execute("DROP TABLE "+TABLE);
+			stmt.execute("DROP TABLE "+CAT_TABLE);
+			stmt.execute(CREATE_CAT_TABLE);
+			stmt.execute(CREATE_TABLE);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

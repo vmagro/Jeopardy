@@ -7,6 +7,7 @@ public class Question {
 	private int value = 0;
 	private int col = -1;
 	private int row = -1;
+	private int id = 0;
 	
 	public String getQuestion() {
 		return question;
@@ -37,6 +38,12 @@ public class Question {
 	}
 	public void setRow(int row) {
 		this.row = row;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	

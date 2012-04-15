@@ -1,11 +1,16 @@
 package com.socaldevs.jeopardy;
 
-public interface DataStorage {
+import java.util.List;
 
-	public Question getQuestion(int col, int row);
-	public Question getQuestion(int id);
+public abstract class DataStorage {
+
+	public abstract Question getQuestion(int col, int row);
+	public abstract Question getQuestion(int id);
 	
-	public void put(String question, String answer, int col, int row, int value);
-	public void put(Question question);
+	public abstract void put(String question, String answer, int col, int row, int value);
+	public abstract void put(Question question);
+	
+	public abstract void addCategory(String cat, int num);
+	public abstract List<String> getCategories();
 	
 }
