@@ -8,9 +8,6 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		SQLiteStorage.init("servite.db");
-		//SQLiteStorage storage = SQLiteStorage.getInstance();		
-		
-		//QuestionFrame frame = new QuestionFrame(1);
 		
 		GameEngine engine = GameEngine.getInstance();
 		engine.showPlayers();

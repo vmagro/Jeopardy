@@ -39,12 +39,14 @@ public class QuestionsFrame extends JFrame implements ActionListener{
 		
 		pack();
 		setVisible(true);
+		setResizable(false);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Button b = (Button) e.getSource();
 		GameEngine.getInstance().showQuestion(b.getQuestionId());
+		b.deactivate();
 	}
 
 }

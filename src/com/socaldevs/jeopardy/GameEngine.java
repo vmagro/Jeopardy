@@ -41,10 +41,6 @@ public class GameEngine {
 		player.addScore(value);
 	}
 	
-	public void showQuestion(int col, int row){
-		new QuestionFrame(storage.getQuestion(col, row).getId());
-	}
-	
 	public void showPlayers(){
 		if(playerFrame == null)
 			playerFrame = new PlayerFrame();
@@ -56,6 +52,8 @@ public class GameEngine {
 	}
 
 	public void showQuestion(int questionId) {
-		new QuestionFrame(questionId).setLocation(questionsFrame.getX(), questionsFrame.getY());
+		QuestionFrame frame = new QuestionFrame(questionId);
+		frame.setLocation(questionsFrame.getX()+(questionsFrame.getWidth()/2) - (frame.getWidth()/2), questionsFrame.getY()+(questionsFrame.getHeight()));
+		frame.setResizable(false);
 	}
 }

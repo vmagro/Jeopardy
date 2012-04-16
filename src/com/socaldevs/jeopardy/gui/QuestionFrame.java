@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import com.socaldevs.jeopardy.GameEngine;
 import com.socaldevs.jeopardy.SQLiteStorage;
@@ -66,7 +67,7 @@ public class QuestionFrame extends JFrame implements ActionListener{
 			AnswerButton b = (AnswerButton) ae.getSource();
 			int qid = b.getQuestionId();
 			
-			JDialog dialog = new JDialog();
+			final JDialog dialog = new JDialog();
 			JLabel label = new JLabel();
 			if(qid == this.questionId){
 				label.setText("Correct!");
@@ -76,12 +77,22 @@ public class QuestionFrame extends JFrame implements ActionListener{
 				label.setText("Sorry, but that is incorrect");
 				GameEngine.getInstance().registerIncorrect(GameEngine.getInstance().getStorage().getQuestion(questionId).getValue());
 			}
-			dialog.setLocation(getX(), getY());
+			dialog.setLocation(getX()+(getWidth()/2)-(dialog.getWidth()/2), getY()+(getHeight()/2));
 			this.setVisible(false);
 			dialog.setContentPane(label);
 			dialog.pack();
 			dialog.setVisible(true);
 			
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					dialog.setVisible(false);
+				}
+			});
 		}
 	}
 	
